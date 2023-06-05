@@ -58,6 +58,9 @@ const run = async () => {
         } else if (text.toLowerCase().includes('vietory')) {
           console.log('[TF2 Voice] Victory!')
           // show winning team's color
+        } else if (text.toLowerCase().includes('defeat')) { // @TODO verify this is how it reads that word
+          console.log('YOU HAVE FAILED')
+          // show winning team's color
         }
         fs.unlink(loc, () => { }) // delete the screenshot
       })
