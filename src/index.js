@@ -77,8 +77,6 @@ const hexToRgb = (hex) => {
 
 const officialColorsRgb = officialColors.map(color => hexToRgb(color))
 
-console.log(officialColorsRgb)
-
 const getClosestColor = target => {
   let closestDistance = Infinity
   let closestColor = null
@@ -87,7 +85,6 @@ const getClosestColor = target => {
   const g1 = target.g
   const b1 = target.b
   officialColorsRgb.forEach(color => {
-    console.log({ color })
     const r2 = color.r
     const g2 = color.g
     const b2 = color.b
