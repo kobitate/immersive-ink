@@ -1,7 +1,6 @@
 # Immersive Ink - Smart Lighting Sync for Splatoon 3
 
-[![wakatime](https://wakatime.com/badge/github/kobitate/immersive-ink.svg?style=flat-square)](https://wakatime.com/badge/github/kobitate/immersive-ink) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-5e0c73.svg?style=flat-square)](code_of_conduct.md) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-f4e049.svg?style=flat-square)](https://standardjs.com)
-
+[![wakatime](https://wakatime.com/badge/github/kobitate/immersive-ink.svg?style=flat-square)](https://wakatime.com/badge/github/kobitate/immersive-ink) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-5e0c73.svg?style=flat-square)](code_of_conduct.md) [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/kobitate/immersive-ink/node.js.yml?color=f4e049&label=standard%20code%20style&style=flat-square)](https://standardjs.com)
 
 Sync your smart lights with the current team colors on Splatoon 3! Requires a
 Capture Card to gather information from the game screen. Lights are controlled 
