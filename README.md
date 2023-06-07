@@ -4,7 +4,7 @@
 
 Sync your smart lights with the current team colors on Splatoon 3! Requires a
 Capture Card to gather information from the game screen. Lights are controlled 
-via Home Assistant. Works best on macOS.
+via Home Assistant. Works best on macOS (see [Compatibility Note](#compatibility-note))
 
 https://github.com/kobitate/immersive-ink/assets/2555575/09dc60ae-8d8f-45c7-a99a-8928edf42077
 
