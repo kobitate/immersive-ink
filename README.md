@@ -1,5 +1,7 @@
 # Immersive Ink - Smart Lighting Sync for Splatoon 3
 
+[![wakatime](https://wakatime.com/badge/user/eb9b1918-2b3f-49fa-9f43-141c1f1b52ce/project/96c44a16-4e0a-4863-a902-b7be242cd629.svg?style=for-the-badge)](https://wakatime.com/badge/user/eb9b1918-2b3f-49fa-9f43-141c1f1b52ce/project/96c44a16-4e0a-4863-a902-b7be242cd629)
+
 Sync your smart lights with the current team colors on Splatoon 3! Requires a
 Capture Card to gather information from the game screen. Lights are controlled 
 via Home Assistant. Works best on macOS.
