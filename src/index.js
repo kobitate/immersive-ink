@@ -19,6 +19,7 @@ const {
 
 const scheduler = Tesseract.createScheduler()
 let capturePaused = false
+let matchStarting = false
 
 const makeWorker = async () => {
   const worker = await Tesseract.createWorker()
@@ -144,15 +145,14 @@ const run = async () => {
         if (capturePaused) {
           return
         }
-        const { text } = ocr.data
+        let { text } = ocr.data
 
-        if (text.toLowerCase().includes('matching')) {
-          console.log('matching...')
-          setLightColors(hexToRgb('#70bb3d'), hexToRgb('#aec038'))
-          // set colors to the green and yellow that the lobby uses
-        } else if (text.includes('0000')) {
-          console.log('match starting. extracting colors...')
-          const pauseLength = DEBUG ? 5000 : 210000
+        text = text.toLowerCase()
+
+        // @TODO #2 Refactor to be event subscription based
+        if (matchStarting && !text.includes('Ink the most turf')) {
+          matchStarting = false
+          const pauseLength = DEBUG ? 5000 : 170000
           console.log(`pausing capture for ${pauseLength / 1000}s`)
           capturePaused = true
 
@@ -166,10 +166,22 @@ const run = async () => {
           setLightColors(colors.self, colors.enemy)
 
           setTimeout(() => { capturePaused = false }, pauseLength)
-        } else if (text.toLowerCase().includes('vietory') && colors.self !== null) {
+        } else if (text.includes('matching')) {
+          console.log('matching...')
+          setLightColors(hexToRgb('#70bb3d'), hexToRgb('#aec038'))
+          // set colors to the green and yellow that the lobby uses
+        } else if (text.includes('ink the most turf')) { // @TODO #4 adapt for anarchy modes and more
+          console.log('match starting, waiting for start screen')
+          const pauseLength = 8000
+          console.log(`pausing capture for ${pauseLength / 1000}s`)
+          matchStarting = true
+          capturePaused = true
+
+          setTimeout(() => { capturePaused = false }, pauseLength)
+        } else if (text.includes('vietory') && colors.self !== null) {
           console.log('[TF2 Voice] Victory!')
           setLightColors(colors.self)
-        } else if (text.toLowerCase().includes('defeat') && colors.enemy !== null) { // @TODO verify this is how it reads that word
+        } else if (text.includes('befeat') && colors.enemy !== null) {
           console.log('YOU HAVE FAILED')
           setLightColors(colors.enemy)
         }
