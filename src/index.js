@@ -81,11 +81,12 @@ const officialColorsRgb = officialColors.map(color => hexToRgb(color))
 const getClosestColor = target => {
   let closestDistance = Infinity
   let closestColor = null
+  let index = null
 
   const r1 = target.r
   const g1 = target.g
   const b1 = target.b
-  officialColorsRgb.forEach(color => {
+  officialColorsRgb.forEach((color, i) => {
     const r2 = color.r
     const g2 = color.g
     const b2 = color.b
@@ -97,10 +98,11 @@ const getClosestColor = target => {
     if (dist < closestDistance) {
       closestDistance = dist
       closestColor = color
+      index = i
     }
   })
 
-  return closestColor
+  return { color: closestColor, index }
 }
 
 const colors = {
@@ -109,8 +111,37 @@ const colors = {
 }
 
 const colorCoords = {
-  self: [560, 20],
-  enemy: [900, 20]
+  self: [
+    [380, 20],
+    [440, 20],
+    [498, 20],
+    [560, 20]
+  ],
+  enemy: [
+    [725, 20],
+    [784, 20],
+    [843, 20],
+    [902, 20]
+  ]
+}
+
+const findTeamColor = (jImage, coords) => {
+  const foundColors = {}
+
+  // checking all individual spots, counting the number of times we find each official color
+  coords.forEach(([x, y]) => {
+    const pixelColor = Jimp.intToRGBA(jImage.getPixelColor(x, y))
+    const closest = getClosestColor(pixelColor)
+    if (foundColors[closest.index]) {
+      foundColors[closest.index]++
+    } else {
+      foundColors[closest.index] = 1
+    }
+  })
+
+  // select the most commonly found official color
+  const likelyColor = Object.keys(foundColors).reduce((a, b) => foundColors[a] > foundColors[b] ? a : b)
+  return officialColorsRgb[likelyColor]
 }
 
 const setLightColors = (left, right) => {
@@ -122,6 +153,13 @@ const setLightColors = (left, right) => {
     entity_id: HASS_LIGHT_RIGHT,
     rgb_color: right ? [right.r, right.g, right.b] : [left.r, left.g, left.b]
   })
+}
+
+const pause = ms => {
+  console.log(`pausing capture for ${ms / 1000}s`)
+  capturePaused = true
+
+  setTimeout(() => { capturePaused = false }, ms)
 }
 
 const run = async () => {
@@ -150,34 +188,24 @@ const run = async () => {
         text = text.toLowerCase()
 
         // @TODO #2 Refactor to be event subscription based
-        if (matchStarting && !text.includes('Ink the most turf')) {
+        if (matchStarting && !text.includes('ink the most turf')) {
           matchStarting = false
-          const pauseLength = DEBUG ? 5000 : 170000
-          console.log(`pausing capture for ${pauseLength / 1000}s`)
-          capturePaused = true
+          pause(DEBUG ? 5000 : 170000)
 
           // set colors from teams
           const jImage = await Jimp.read(loc)
-          const self = Jimp.intToRGBA(jImage.getPixelColor(...colorCoords.self))
-          const enemy = Jimp.intToRGBA(jImage.getPixelColor(...colorCoords.enemy))
-          colors.self = getClosestColor(self)
-          colors.enemy = getClosestColor(enemy)
+          colors.self = findTeamColor(jImage, colorCoords.self)
+          colors.enemy = findTeamColor(jImage, colorCoords.enemy)
 
           setLightColors(colors.self, colors.enemy)
-
-          setTimeout(() => { capturePaused = false }, pauseLength)
         } else if (text.includes('matching')) {
           console.log('matching...')
           setLightColors(hexToRgb('#70bb3d'), hexToRgb('#aec038'))
           // set colors to the green and yellow that the lobby uses
         } else if (text.includes('ink the most turf')) { // @TODO #4 adapt for anarchy modes and more
           console.log('match starting, waiting for start screen')
-          const pauseLength = 8000
-          console.log(`pausing capture for ${pauseLength / 1000}s`)
           matchStarting = true
-          capturePaused = true
-
-          setTimeout(() => { capturePaused = false }, pauseLength)
+          pause(7000)
         } else if (text.includes('vietory') && colors.self !== null) {
           console.log('[TF2 Voice] Victory!')
           setLightColors(colors.self)
