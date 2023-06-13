@@ -131,3 +131,4 @@ dist
 
 tmp/
 eng.traineddata
+.DS_Store
